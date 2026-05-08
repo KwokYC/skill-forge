@@ -1,0 +1,30 @@
+{
+  "name": "skill-forge",
+  "version": "1.0.0",
+  "description": "Generate, validate, and score Claude Code skills. Make your AI coding assistant smarter.",
+  "keywords": ["claude-code", "skills", "ai", "developer-tools", "cli"],
+  "license": "MIT",
+  "author": "",
+  "type": "module",
+  "bin": {
+    "skill-forge": "./bin/skill-forge.js"
+  },
+  "files": ["bin", "dist"],
+  "scripts": {
+    "build": "tsc",
+    "start": "node bin/skill-forge.js",
+    "dev": "tsx src/cli.ts",
+    "test": "node --experimental-vm-modules node_modules/.bin/vitest run",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "commander": "^13.0.0",
+    "yaml": "^2.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}
