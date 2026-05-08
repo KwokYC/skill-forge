@@ -1,9 +1,21 @@
 # skill-forge
 
-CLI tool to generate, validate, and score [Claude Code](https://claude.ai/code) skills. Stop writing mediocre skills — forge great ones.
+CLI tool to generate, validate, and score [Claude Code](https://claude.ai/code) skills. **Stop writing mediocre skills — forge great ones.**
 
 [![npm](https://img.shields.io/npm/v/skill-forge)](https://www.npmjs.com/package/skill-forge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/KwokYC/skill-forge?style=social)](https://github.com/KwokYC/skill-forge)
+
+> If this project helps you, please give it a star. It helps others discover it and keeps us motivated to add more features.
+
+## Why skill-forge?
+
+The Claude Code skills ecosystem is growing fast, but quality is inconsistent:
+- Skills with vague trigger phrases that never auto-activate
+- Missing code examples and anti-patterns
+- No way to know if your skill is actually good
+
+**skill-forge** fixes that with three commands: `generate`, `validate`, `score`.
 
 ## Install
 
@@ -11,7 +23,7 @@ CLI tool to generate, validate, and score [Claude Code](https://claude.ai/code) 
 npm install -g skill-forge
 ```
 
-Or use directly:
+Or skip installation:
 
 ```bash
 npx skill-forge generate "Python data pipeline debugging"
@@ -21,9 +33,7 @@ npx skill-forge score ~/.claude/skills/
 
 ## Commands
 
-### generate
-
-Create a new skill from a description:
+### `generate` — Create a new skill
 
 ```bash
 skill-forge generate "REST API design best practices"
@@ -31,59 +41,66 @@ skill-forge generate "React testing patterns" --name react-testing
 skill-forge generate "Django security audit" -o ./my-skills
 ```
 
-Generates a `SKILL.md` with:
-- Proper frontmatter (name, description with trigger phrases)
-- Structured template (When to Activate, Core Rules, Decision Tree, Anti-Patterns)
-- Ready to customize and fill in
+Output:
+```
+✓ Generated skill: react-testing
+  📁 ./react-testing/SKILL.md
+  🎯 4 trigger phrases
 
-### validate
+Next steps:
+  1. Edit ./react-testing/SKILL.md to add your instructions
+  2. Run: skill-forge validate ./react-testing/SKILL.md
+  3. Run: skill-forge score ./react-testing/SKILL.md
+```
 
-Check a skill for structural issues:
+Generates a ready-to-customize `SKILL.md` with proper frontmatter, trigger phrases, and structured template.
+
+### `validate` — Check for issues
 
 ```bash
 skill-forge validate ~/.claude/skills/my-skill/SKILL.md
-skill-forge validate ./skills/*/SKILL.md --strict
+skill-forge validate ./skills/ --strict
 ```
 
 Checks:
-- Frontmatter completeness (name, description)
+- Frontmatter completeness (name, description required)
 - Trigger phrase quality (quoted, specific, 3+ words)
 - Body structure (sections, code examples, anti-patterns)
 - Writing style (imperative form, not second person)
 
-### score
-
-Rate skill quality on a 100-point scale:
+### `score` — Rate quality (0-100)
 
 ```bash
-skill-forge score ~/.claude/skills/my-skill/SKILL.md
+skill-forge score ~/.claude/skills/
 skill-forge score ~/.claude/skills/ -f json -o report.json
 skill-forge score ./skills/ --min 70
 ```
 
-Output:
-
 ```
   Skill                     | Struct |  Trig | Content | Token | Action | Total | Grade
   --------------------------+--------+-------+---------+-------+--------+-------+------
-  code-quality-guard        |    18  |   22  |    20   |   12  |    13  |   85  |    A
-  tdd-enforcer              |    20  |   25  |    23   |   10  |    14  |   92  |   A+
-  security-scanner          |    15  |   18  |    22   |   14  |    11  |   80  |    A
+  code-quality-guard        |    20  |   25  |    25   |   12  |    10  |   92  |   A+
+  security-scanner          |    20  |   25  |    21   |   12  |    15  |   93  |   A+
+  tdd-enforcer              |    20  |   25  |    25   |   12  |    10  |   92  |   A+
+
+  Average: 92/100 (A+)
 ```
 
-## Scoring System (100 points)
+## Scoring System
+
+5 dimensions, 100 points total:
 
 | Dimension | Weight | What it measures |
 |-----------|--------|------------------|
 | **Structure** | 20 pts | Frontmatter fields, headings, file organization |
-| **Triggers** | 25 pts | Specific trigger phrases in description, quantity, quality |
-| **Content** | 25 pts | Code examples, ❌/✅ comparisons, decision trees, anti-patterns |
-| **Token Efficiency** | 15 pts | Body length, references/ separation, conciseness |
-| **Actionability** | 15 pts | Imperative form, commands, checklists, quick reference |
+| **Triggers** | 25 pts | Specific trigger phrases, quantity, quality |
+| **Content** | 25 pts | Code examples, ❌/✅ comparisons, anti-patterns |
+| **Token Efficiency** | 15 pts | Body length, conciseness, no bloat |
+| **Actionability** | 15 pts | Imperative form, commands, checklists, tables |
 
 ### Grade Scale
 
-| Grade | Score | Meaning |
+| Grade | Score | Verdict |
 |-------|-------|---------|
 | A+ | 90-100 | Production quality. Ship it. |
 | A | 80-89 | Great. Minor improvements possible. |
@@ -92,43 +109,15 @@ Output:
 | D | 50-59 | Below average. Significant gaps. |
 | F | 0-49 | Not ready. Start over. |
 
-## Example: Generating a Skill
+## Related Projects
 
-```bash
-$ skill-forge generate "Debug Python async code issues" --name debug-async
-
-✓ Generated skill: debug-async
-  📁 ./debug-async/SKILL.md
-  🎯 5 trigger phrases
-
-Next steps:
-  1. Edit ./debug-async/SKILL.md to add your instructions
-  2. Run: skill-forge validate ./debug-async/SKILL.md
-  3. Run: skill-forge score ./debug-async/SKILL.md
-```
-
-## Example: Scoring Skills
-
-```bash
-$ skill-forge score ~/.claude/skills/
-
-  Skill                     | Struct |  Trig | Content | Token | Action | Total | Grade
-  --------------------------+--------+-------+---------+-------+--------+-------+------
-  smart-commit              |    20  |   25  |    22   |   11  |    13  |   91  |   A+
-  api-designer              |    20  |   23  |    24   |   13  |    12  |   92  |   A+
-  code-quality-guard        |    18  |   22  |    20   |   12  |    13  |   85  |    A
-
-  Average: 89/100 (A)
-
-  Suggestions:
-    code-quality-guard: Add frontmatter with name and description
-```
-
-## Related
-
-- [awesome-dev-skills](https://github.com/OWNER/awesome-dev-skills) — 8 production-ready Claude Code skills
+- [awesome-dev-skills](https://github.com/KwokYC/awesome-dev-skills) — 8 production-ready Claude Code skills (scored A+ by skill-forge)
 - [Claude Code Docs](https://docs.anthropic.com/en/docs/claude-code)
 
 ## License
 
 MIT
+
+---
+
+**Star this repo if you find it useful — it helps others discover these tools!**
